@@ -20,4 +20,35 @@ import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest(PatrimoineController.class)
 public class TestPatrimoineAPI {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private PatrimoineService patrimoineService;
+
+    private Patrimoine patrimoine;
+
+    @BeforeEach
+    public void setUp() {
+        patrimoine = new Patrimoine("John Doe", LocalDateTime.now());
+    }
+
+    @Test
+    public void testCreateOrUpdatePatrimoine() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/patrimoines/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"possesseur\":\"John Doe\"}"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void testGetPatrimoine() throws Exception {
+        Mockito.when(patrimoineService.getPatrimoine(any())).thenReturn(patrimoine);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/patrimoines/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.possesseur").value("John Doe"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.derniereModification").exists());
+    }
 }
