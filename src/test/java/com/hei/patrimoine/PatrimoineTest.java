@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest(PatrimoineController.class)
-public class TestPatrimoineAPI {
+public class PatrimoineTest {
     @Autowired
     private MockMvc mockMvc;
 
